@@ -8,6 +8,36 @@
 #include <stdio.h>
 #include <errno.h>
 
+#define BLOCK_SIZE 	512
+#define MAX_FILES 	4096
+#define MAX_BLOCKS	256
+#define DIRECT_BLOCKS	16
+
+typedef struct superblock 
+{
+
+	char	s_datablock[BLOCK_SIZE * MAX_BLOCKS];
+	int	s_inode[MAX_FILES];
+	int	s_free_blocks;
+	time_t	s_mount_time;
+		
+} superblock;
+
+typedef struct inode {
+
+	int 	i_mode;
+	int 	i_nlink;
+	int 	i_atime;
+	int 	t_mtime;
+	int 	i_ctime;
+	int 	i_uid;
+	int	i_gid;
+	int 	i_size;
+	int 	i_blocks;
+	int 	a_addr[DIRECT_BLOCKS];
+
+} inode;
+
 static void *fs_init(struct fuse_conn_info *conn,
                         struct fuse_config *cfg)
 {
@@ -28,11 +58,11 @@ static const struct fuse_operations fs_operations = {
 
 int main(int argc, char *argv[])
 {
-        int ret;
-        struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
+	int ret;
+	struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
 
-        ret = fuse_main(args.argc, args.argv, &fs_operations, NULL);
-        fuse_opt_free_args(&args);
+	ret = fuse_main(args.argc, args.argv, &fs_operations, NULL);
+	fuse_opt_free_args(&args);
 
-        return ret;
+	return ret;
 }
