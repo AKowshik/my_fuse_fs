@@ -39,21 +39,23 @@ typedef struct inode {
 } inode;
 
 static void *fs_init(struct fuse_conn_info *conn,
-                        struct fuse_config *cfg)
+						struct fuse_config *cfg)
 {
-        (void) conn;
-        cfg->kernel_cache = 1;
-        return NULL;
+	(void) conn;
+	cfg->kernel_cache = 1;
+	return NULL;
 }
 
 static int fs_open(const char *path, struct fuse_file_info *fi);
 static int fs_read(const char *path, char *buf, size_t size, off_t offset,
-                      struct fuse_file_info *fi);
+					struct fuse_file_info *fi);
+static int fs_getattr(const char *path, struct stat *fs_stat);
 
 static const struct fuse_operations fs_operations = {
-        .init           = fs_init,
-        .open           = fs_open,
-        .read           = fs_read,
+	.init		= fs_init,
+	.open		= fs_open,
+	.read		= fs_read,
+	getattr		= fs_getattr,
 };
 
 int main(int argc, char *argv[])
